@@ -1,5 +1,11 @@
 main: community.hlresort.holomatsuri.pointCounter
 name: PointCounter
-api-version: 1.16.4
+api-version: 1.16
 version: 1.0
 build: 1
+
+commands:
+  setarea:
+    description: Your description
+    usage: /setarea
+    permission: holomatsuricounter.admin
