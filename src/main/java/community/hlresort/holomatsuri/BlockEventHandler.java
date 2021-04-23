@@ -1,6 +1,5 @@
 package community.hlresort.holomatsuri;
 
-import community.hlresort.holomatsuri.pointCounter;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,7 +39,25 @@ public class BlockEventHandler implements Listener {
 
         // Check if it is in the build area
         if(blockX >= xStart && blockX <= xEnd && blockZ >= zStart && blockZ <= zEnd) {
-            player.sendMessage(block.getType().name() + ", " +  pointCounter.config.get("blocks." + block.getType().name()));
+            try {
+                Statement statement = pointCounter.conn.createStatement();
+                ResultSet result = statement.executeQuery("SELECT EXISTS(SELECT 1 FROM points WHERE uuid=\"" + player.getUniqueId() + "\");");
+                while(result.next()) {
+                    if(result.getBoolean(1)) {
+                        Statement updateRow = pointCounter.conn.createStatement();
+                        updateRow.executeUpdate("UPDATE points SET BuildPoints = BuildPoints + " + pointCounter.config.get("blocks." + block.getType().name()) + " WHERE uuid=\"" + player.getUniqueId() + "\";");
+                        updateRow.close();
+                    } else {
+                        Statement insertRow = pointCounter.conn.createStatement();
+                        insertRow.executeUpdate("INSERT points(uuid, BuildPoints, DeliveryPoints) VALUES (" + player.getUniqueId() + ", " + pointCounter.config.get("blocks." + block.getType().name()) + ", 0);");
+                        insertRow.close();
+                    }
+                }
+                statement.close();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            player.sendMessage(block.getType().name() + ", -" +  pointCounter.config.get("blocks." + block.getType().name()));
         }
     }
 
@@ -75,6 +92,18 @@ public class BlockEventHandler implements Listener {
             try {
                 Statement statement = pointCounter.conn.createStatement();
                 ResultSet result = statement.executeQuery("SELECT EXISTS(SELECT 1 FROM points WHERE uuid=\"" + player.getUniqueId() + "\");");
+                while(result.next()) {
+                    if(result.getBoolean(1)) {
+                        Statement updateRow = pointCounter.conn.createStatement();
+                        updateRow.executeUpdate("UPDATE points SET BuildPoints = BuildPoints - " + pointCounter.config.get("blocks." + block.getType().name()) + " WHERE uuid=\"" + player.getUniqueId() + "\";");
+                        updateRow.close();
+                    } else {
+                        Statement insertRow = pointCounter.conn.createStatement();
+                        insertRow.executeUpdate("INSERT points(uuid, BuildPoints, DeliveryPoints) VALUES (" + player.getUniqueId() + ", -" + pointCounter.config.get("blocks." + block.getType().name()) + ", 0);");
+                        insertRow.close();
+                    }
+                }
+                statement.close();
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }

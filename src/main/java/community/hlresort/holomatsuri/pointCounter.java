@@ -2,7 +2,6 @@ package community.hlresort.holomatsuri;
 
 import community.hlresort.holomatsuri.commands.getArea;
 import community.hlresort.holomatsuri.commands.setArea;
-import community.hlresort.holomatsuri.BlockEventHandler;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.sql.Connection;
@@ -29,6 +28,7 @@ public class pointCounter extends JavaPlugin {
 
         // Event handlers
         this.getServer().getPluginManager().registerEvents(new BlockEventHandler(), this);
+        this.getServer().getPluginManager().registerEvents(new ChestEventHandler(), this);
 
         // Database initialization
         try {
