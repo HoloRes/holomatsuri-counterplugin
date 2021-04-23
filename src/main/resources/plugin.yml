@@ -6,6 +6,10 @@ build: 1
 
 commands:
   setarea:
-    description: Your description
+    description: Set the new build area
     usage: /setarea
     permission: holomatsuricounter.admin
+  getarea:
+      description: Get the current build area
+      usage: /getarea
+      permission: holomatsuricounter.admin
