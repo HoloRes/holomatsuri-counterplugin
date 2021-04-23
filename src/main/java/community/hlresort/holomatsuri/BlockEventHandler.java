@@ -8,6 +8,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 public class BlockEventHandler implements Listener {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
@@ -68,6 +72,12 @@ public class BlockEventHandler implements Listener {
 
         // Check if it is in the build area
         if(blockX >= xStart && blockX <= xEnd && blockZ >= zStart && blockZ <= zEnd) {
+            try {
+                Statement statement = pointCounter.conn.createStatement();
+                ResultSet result = statement.executeQuery("SELECT EXISTS(SELECT 1 FROM points WHERE uuid=\"" + player.getUniqueId() + "\");");
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
             player.sendMessage(block.getType().name() + ", -" +  pointCounter.config.get("blocks." + block.getType().name()));
         }
     }

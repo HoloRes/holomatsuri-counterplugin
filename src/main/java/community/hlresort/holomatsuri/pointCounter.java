@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class pointCounter extends JavaPlugin {
     public static pointCounter plugin;
@@ -29,12 +30,29 @@ public class pointCounter extends JavaPlugin {
         // Event handlers
         this.getServer().getPluginManager().registerEvents(new BlockEventHandler(), this);
 
+        // Database initialization
+        try {
+            Statement statement = conn.createStatement();
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS points (uuid TEXT PRIMARY KEY, BuildPoints INTEGER NOT NULL, DeliveryPoints INTEGER NOT NULL) WITHOUT ROWID;");
+            statement.close();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+
         getLogger().info("Plugin loaded!");
     }
 
     @Override
     public void onDisable() {
         plugin = null;
+
+        if(conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
         conn = null;
     }
 
@@ -45,14 +63,6 @@ public class pointCounter extends JavaPlugin {
             conn = DriverManager.getConnection(url);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-            }
         }
     }
 }
