@@ -1,7 +1,6 @@
 package community.hlresort.holomatsuri;
 
-import community.hlresort.holomatsuri.commands.getArea;
-import community.hlresort.holomatsuri.commands.setArea;
+import community.hlresort.holomatsuri.commands.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.sql.Connection;
@@ -25,6 +24,9 @@ public class pointCounter extends JavaPlugin {
         // Commands
         this.getCommand("setarea").setExecutor(new setArea());
         this.getCommand("getarea").setExecutor(new getArea());
+        this.getCommand("addchest").setExecutor(new addChest());
+        this.getCommand("removechest").setExecutor(new removeChest());
+        this.getCommand("points").setExecutor(new getPoints());
 
         // Event handlers
         this.getServer().getPluginManager().registerEvents(new BlockEventHandler(), this);
@@ -34,6 +36,7 @@ public class pointCounter extends JavaPlugin {
         try {
             Statement statement = conn.createStatement();
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS points (uuid TEXT PRIMARY KEY, BuildPoints INTEGER NOT NULL, DeliveryPoints INTEGER NOT NULL) WITHOUT ROWID;");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS chests (x INTEGER NOT NULL, y INTEGER NOT NULL, z INTEGER NOT NULL);");
             statement.close();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());

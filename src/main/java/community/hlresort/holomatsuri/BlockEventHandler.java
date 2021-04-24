@@ -10,6 +10,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BlockEventHandler implements Listener {
     @EventHandler
@@ -49,7 +51,7 @@ public class BlockEventHandler implements Listener {
                         updateRow.close();
                     } else {
                         Statement insertRow = pointCounter.conn.createStatement();
-                        insertRow.executeUpdate("INSERT points(uuid, BuildPoints, DeliveryPoints) VALUES (" + player.getUniqueId() + ", " + pointCounter.config.get("blocks." + block.getType().name()) + ", 0);");
+                        insertRow.executeUpdate("INSERT INTO points(uuid, BuildPoints, DeliveryPoints) VALUES (\"" + player.getUniqueId() + "\", " + pointCounter.config.get("blocks." + block.getType().name()) + ", 0);");
                         insertRow.close();
                     }
                 }
@@ -57,7 +59,6 @@ public class BlockEventHandler implements Listener {
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
-            player.sendMessage(block.getType().name() + ", -" +  pointCounter.config.get("blocks." + block.getType().name()));
         }
     }
 
@@ -99,7 +100,7 @@ public class BlockEventHandler implements Listener {
                         updateRow.close();
                     } else {
                         Statement insertRow = pointCounter.conn.createStatement();
-                        insertRow.executeUpdate("INSERT points(uuid, BuildPoints, DeliveryPoints) VALUES (" + player.getUniqueId() + ", -" + pointCounter.config.get("blocks." + block.getType().name()) + ", 0);");
+                        insertRow.executeUpdate("INSERT INTO points(uuid, BuildPoints, DeliveryPoints) VALUES (\"" + player.getUniqueId() + "\", -" + pointCounter.config.get("blocks." + block.getType().name()) + ", 0);");
                         insertRow.close();
                     }
                 }
@@ -107,7 +108,6 @@ public class BlockEventHandler implements Listener {
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
-            player.sendMessage(block.getType().name() + ", -" +  pointCounter.config.get("blocks." + block.getType().name()));
         }
     }
 }

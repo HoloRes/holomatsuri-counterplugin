@@ -13,3 +13,17 @@ commands:
       description: Get the current build area
       usage: /getarea
       permission: holomatsuricounter.admin
+
+  addchest:
+    description: Add a tracked chest
+    usage: /addchest
+    permission: holomatsuricounter.admin
+  removechest:
+      description: Remove a tracked chest
+      usage: /removechest
+      permission: holomatsuricounter.admin
+
+  points:
+    description: Get your point count
+    usage: /points
+    permission: holomatsuricounter.player
