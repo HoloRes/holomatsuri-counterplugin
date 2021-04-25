@@ -49,11 +49,11 @@ public class BlockEventHandler implements Listener {
                 while (result.next()) {
                     if (result.getBoolean(1)) {
                         Statement updateRow = pointCounter.conn.createStatement();
-                        updateRow.executeUpdate("UPDATE points SET BuildPoints = BuildPoints + " + pointCounter.config.get("blocks." + block.getType().name()) + " WHERE uuid=\"" + player.getUniqueId() + "\";");
+                        updateRow.executeUpdate("UPDATE points SET BuildPoints = BuildPoints + " + pointCounter.config.get("blocks.build." + block.getType().name()) + " WHERE uuid=\"" + player.getUniqueId() + "\";");
                         updateRow.close();
                     } else {
                         Statement insertRow = pointCounter.conn.createStatement();
-                        insertRow.executeUpdate("INSERT INTO points(uuid, BuildPoints, DeliveryPoints) VALUES (\"" + player.getUniqueId() + "\", " + pointCounter.config.get("blocks." + block.getType().name()) + ", 0);");
+                        insertRow.executeUpdate("INSERT INTO points(uuid, BuildPoints, DeliveryPoints) VALUES (\"" + player.getUniqueId() + "\", " + pointCounter.config.get("blocks.build." + block.getType().name()) + ", 0);");
                         insertRow.close();
                     }
                 }
@@ -101,11 +101,11 @@ public class BlockEventHandler implements Listener {
                 while (result.next()) {
                     if (result.getBoolean(1)) {
                         Statement updateRow = pointCounter.conn.createStatement();
-                        updateRow.executeUpdate("UPDATE points SET BuildPoints = BuildPoints - " + pointCounter.config.get("blocks." + block.getType().name()) + " WHERE uuid=\"" + player.getUniqueId() + "\";");
+                        updateRow.executeUpdate("UPDATE points SET BuildPoints = BuildPoints - " + pointCounter.config.get("blocks.build." + block.getType().name()) + " WHERE uuid=\"" + player.getUniqueId() + "\";");
                         updateRow.close();
                     } else {
                         Statement insertRow = pointCounter.conn.createStatement();
-                        insertRow.executeUpdate("INSERT INTO points(uuid, BuildPoints, DeliveryPoints) VALUES (\"" + player.getUniqueId() + "\", -" + pointCounter.config.get("blocks." + block.getType().name()) + ", 0);");
+                        insertRow.executeUpdate("INSERT INTO points(uuid, BuildPoints, DeliveryPoints) VALUES (\"" + player.getUniqueId() + "\", -" + pointCounter.config.get("blocks.build." + block.getType().name()) + ", 0);");
                         insertRow.close();
                     }
                 }

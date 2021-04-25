@@ -1,7 +1,7 @@
 main: community.hlresort.holomatsuri.pointCounter
 name: PointCounter
 api-version: 1.16
-version: 2.0.0
+version: 3.0.0
 build: 1
 
 commands:

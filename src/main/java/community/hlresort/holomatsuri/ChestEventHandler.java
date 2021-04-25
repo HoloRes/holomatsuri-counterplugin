@@ -118,17 +118,17 @@ public class ChestEventHandler implements Listener {
                         if (newInventory[i] != oldInventory.get(i)) {
                             if (newInventory[i] == null || newInventory[i].getType().isAir()) {
                                 if (!oldInventory.get(i).getType().isBlock()) return;
-                                pointDifference = pointDifference - (((int) pointCounter.config.get("blocks." + oldInventory.get(i).getType().name())) * oldInventory.get(i).getAmount());
+                                pointDifference = pointDifference - (((int) pointCounter.config.get("blocks.chest." + oldInventory.get(i).getType().name())) * oldInventory.get(i).getAmount());
                             } else if (oldInventory.get(i) == null || oldInventory.get(i).getType().isAir()) {
                                 if (!newInventory[i].getType().isBlock()) return;
-                                pointDifference = pointDifference + (((int) pointCounter.config.get("blocks." + newInventory[i].getType().name())) * newInventory[i].getAmount());
+                                pointDifference = pointDifference + (((int) pointCounter.config.get("blocks.chest." + newInventory[i].getType().name())) * newInventory[i].getAmount());
                             } else {
                                 if (newInventory[i].getType() == oldInventory.get(i).getType()) {
                                     int amountDifference = newInventory[i].getAmount() - oldInventory.get(i).getAmount();
                                     pointDifference = pointDifference + amountDifference;
                                 } else {
-                                    int toRemove = (((int) pointCounter.config.get("blocks." + oldInventory.get(i).getType().name())) * oldInventory.get(i).getAmount());
-                                    int toAdd = (((int) pointCounter.config.get("blocks." + newInventory[i].getType().name())) * newInventory[i].getAmount());
+                                    int toRemove = (((int) pointCounter.config.get("blocks.chest." + oldInventory.get(i).getType().name())) * oldInventory.get(i).getAmount());
+                                    int toAdd = (((int) pointCounter.config.get("blocks.chest." + newInventory[i].getType().name())) * newInventory[i].getAmount());
                                     pointDifference = pointDifference + toAdd - toRemove;
                                 }
                             }
