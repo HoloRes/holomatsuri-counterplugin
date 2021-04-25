@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 public class removeChest implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(!(sender instanceof Player)) {
+        if (!(sender instanceof Player)) {
             sender.sendMessage("This command can only be executed by a player!");
             return false;
         }

@@ -1,7 +1,6 @@
 package community.hlresort.holomatsuri;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,7 +26,7 @@ public class ChestEventHandler implements Listener {
 
         try {
             Statement existsStatement = pointCounter.conn.createStatement();
-            ResultSet existsResult = existsStatement.executeQuery("SELECT EXISTS(SELECT 1 FROM chests WHERE x=\"" + location.getBlockX() + "\" AND y=\"" + location.getBlockY() + "\" AND z=\"" + location.getBlockZ() + "\");");
+            ResultSet existsResult = existsStatement.executeQuery("SELECT EXISTS(SELECT 1 FROM chests WHERE x=\"" + location.getBlockX() + "\" AND y=\"" + location.getBlockY() + "\" AND z=\"" + location.getBlockZ() + "\" AND world=\"" + location.getWorld().getName() + "\");");
             while (existsResult.next()) {
                 exists = existsResult.getBoolean(1);
             }
@@ -46,8 +45,8 @@ public class ChestEventHandler implements Listener {
         if (exists) {
             List<ItemStack> clonedItemStack = new ArrayList<ItemStack>();
             ItemStack[] knownItemStack = inventory.getContents();
-            for(int i = 0; i < knownItemStack.length; i++) {
-                if(knownItemStack[i] == null) clonedItemStack.add(null);
+            for (int i = 0; i < knownItemStack.length; i++) {
+                if (knownItemStack[i] == null) clonedItemStack.add(null);
                 else clonedItemStack.add(new ItemStack(knownItemStack[i].getType(), knownItemStack[i].getAmount()));
             }
             cachedInventories.put(location, clonedItemStack);
@@ -69,7 +68,7 @@ public class ChestEventHandler implements Listener {
             } else {
                 try {
                     Statement addChest = pointCounter.conn.createStatement();
-                    addChest.executeUpdate("INSERT INTO chests(x, y, z) VALUES(" + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ");");
+                    addChest.executeUpdate("INSERT INTO chests(x, y, z, world) VALUES(" + location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ() + ", \"" + location.getWorld().getName() + "\");");
                     addChest.close();
                     player.sendMessage("Chest has been added!");
                 } catch (SQLException e) {
@@ -84,7 +83,7 @@ public class ChestEventHandler implements Listener {
             } else {
                 try {
                     Statement addChest = pointCounter.conn.createStatement();
-                    addChest.executeUpdate("DELETE FROM chests WHERE x = " + location.getBlockX() + " AND y = " + location.getBlockY() + " AND Z = " + location.getBlockZ() + ";");
+                    addChest.executeUpdate("DELETE FROM chests WHERE x = " + location.getBlockX() + " AND y = " + location.getBlockY() + " AND z = " + location.getBlockZ() + " AND world = \"" + location.getWorld().getName() + "\";");
                     addChest.close();
                     player.sendMessage("Chest has been removed!");
                 } catch (SQLException e) {
@@ -124,7 +123,7 @@ public class ChestEventHandler implements Listener {
                                 if (!newInventory[i].getType().isBlock()) return;
                                 pointDifference = pointDifference + (((int) pointCounter.config.get("blocks." + newInventory[i].getType().name())) * newInventory[i].getAmount());
                             } else {
-                                if(newInventory[i].getType() == oldInventory.get(i).getType()) {
+                                if (newInventory[i].getType() == oldInventory.get(i).getType()) {
                                     int amountDifference = newInventory[i].getAmount() - oldInventory.get(i).getAmount();
                                     pointDifference = pointDifference + amountDifference;
                                 } else {
@@ -135,12 +134,12 @@ public class ChestEventHandler implements Listener {
                             }
                         }
                     }
-                    if(pointDifference != 0) {
+                    if (pointDifference != 0) {
                         try {
                             Statement statement = pointCounter.conn.createStatement();
                             ResultSet result = statement.executeQuery("SELECT EXISTS(SELECT 1 FROM points WHERE uuid=\"" + player.getUniqueId() + "\");");
-                            while(result.next()) {
-                                if(result.getBoolean(1)) {
+                            while (result.next()) {
+                                if (result.getBoolean(1)) {
                                     Statement updateRow = pointCounter.conn.createStatement();
                                     updateRow.executeUpdate("UPDATE points SET DeliveryPoints = DeliveryPoints + " + pointDifference + " WHERE uuid=\"" + player.getUniqueId() + "\";");
                                     updateRow.close();

@@ -3,6 +3,7 @@ package community.hlresort.holomatsuri;
 import community.hlresort.holomatsuri.commands.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -36,7 +37,7 @@ public class pointCounter extends JavaPlugin {
         try {
             Statement statement = conn.createStatement();
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS points (uuid TEXT PRIMARY KEY, BuildPoints INTEGER NOT NULL, DeliveryPoints INTEGER NOT NULL) WITHOUT ROWID;");
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS chests (x INTEGER NOT NULL, y INTEGER NOT NULL, z INTEGER NOT NULL);");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS chests (x INTEGER NOT NULL, y INTEGER NOT NULL, z INTEGER NOT NULL, world TEXT NOT NULL);");
             statement.close();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -49,7 +50,7 @@ public class pointCounter extends JavaPlugin {
     public void onDisable() {
         plugin = null;
 
-        if(conn != null) {
+        if (conn != null) {
             try {
                 conn.close();
             } catch (SQLException e) {

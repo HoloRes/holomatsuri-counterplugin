@@ -10,8 +10,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 public class BlockEventHandler implements Listener {
     @EventHandler
@@ -19,8 +18,11 @@ public class BlockEventHandler implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
 
+        if (!Objects.equals(pointCounter.config.get("coordinates.world"), block.getLocation().getWorld().getName()))
+            return;
+
         // Check if anything is null
-        if(pointCounter.config.get("coordinates.x.start") == null
+        if (pointCounter.config.get("coordinates.x.start") == null
                 || pointCounter.config.get("coordinates.z.start") == null
                 || pointCounter.config.get("coordinates.x.end") == null
                 || pointCounter.config.get("coordinates.z.end") == null) return;
@@ -40,12 +42,12 @@ public class BlockEventHandler implements Listener {
         Integer blockZ = block.getLocation().getBlockZ();
 
         // Check if it is in the build area
-        if(blockX >= xStart && blockX <= xEnd && blockZ >= zStart && blockZ <= zEnd) {
+        if (blockX >= xStart && blockX <= xEnd && blockZ >= zStart && blockZ <= zEnd) {
             try {
                 Statement statement = pointCounter.conn.createStatement();
                 ResultSet result = statement.executeQuery("SELECT EXISTS(SELECT 1 FROM points WHERE uuid=\"" + player.getUniqueId() + "\");");
-                while(result.next()) {
-                    if(result.getBoolean(1)) {
+                while (result.next()) {
+                    if (result.getBoolean(1)) {
                         Statement updateRow = pointCounter.conn.createStatement();
                         updateRow.executeUpdate("UPDATE points SET BuildPoints = BuildPoints + " + pointCounter.config.get("blocks." + block.getType().name()) + " WHERE uuid=\"" + player.getUniqueId() + "\";");
                         updateRow.close();
@@ -68,15 +70,18 @@ public class BlockEventHandler implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
 
+        if (!Objects.equals(pointCounter.config.get("coordinates.world"), block.getLocation().getWorld().getName()))
+            return;
+
         // Check if anything is null
-        if(pointCounter.config.get("coordinates.x.start") == null
+        if (pointCounter.config.get("coordinates.x.start") == null
                 || pointCounter.config.get("coordinates.z.start") == null
                 || pointCounter.config.get("coordinates.x.end") == null
                 || pointCounter.config.get("coordinates.z.end") == null) return;
 
         // Get all the coordinates
         Integer xStart = (Integer) ((Integer) pointCounter.config.get("coordinates.x.end") > (Integer) pointCounter.config.get("coordinates.x.start")
-                        ? pointCounter.config.get("coordinates.x.start") : pointCounter.config.get("coordinates.x.end"));
+                ? pointCounter.config.get("coordinates.x.start") : pointCounter.config.get("coordinates.x.end"));
         Integer zStart = (Integer) ((Integer) pointCounter.config.get("coordinates.z.end") > (Integer) pointCounter.config.get("coordinates.z.start")
                 ? pointCounter.config.get("coordinates.z.start") : pointCounter.config.get("coordinates.z.end"));
         Integer xEnd = (Integer) ((Integer) pointCounter.config.get("coordinates.x.end") > (Integer) pointCounter.config.get("coordinates.x.start")
@@ -89,12 +94,12 @@ public class BlockEventHandler implements Listener {
         Integer blockZ = block.getLocation().getBlockZ();
 
         // Check if it is in the build area
-        if(blockX >= xStart && blockX <= xEnd && blockZ >= zStart && blockZ <= zEnd) {
+        if (blockX >= xStart && blockX <= xEnd && blockZ >= zStart && blockZ <= zEnd) {
             try {
                 Statement statement = pointCounter.conn.createStatement();
                 ResultSet result = statement.executeQuery("SELECT EXISTS(SELECT 1 FROM points WHERE uuid=\"" + player.getUniqueId() + "\");");
-                while(result.next()) {
-                    if(result.getBoolean(1)) {
+                while (result.next()) {
+                    if (result.getBoolean(1)) {
                         Statement updateRow = pointCounter.conn.createStatement();
                         updateRow.executeUpdate("UPDATE points SET BuildPoints = BuildPoints - " + pointCounter.config.get("blocks." + block.getType().name()) + " WHERE uuid=\"" + player.getUniqueId() + "\";");
                         updateRow.close();
