@@ -23,7 +23,7 @@ public class setArea implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        if (args[0].toLowerCase(Locale.ROOT).equals("cancel")) {
+        if (args.length > 0 && args[0] != null && args[0].toLowerCase(Locale.ROOT).equals("cancel")) {
             xStart = null;
             zStart = null;
             world = null;

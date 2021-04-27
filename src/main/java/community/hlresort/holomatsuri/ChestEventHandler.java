@@ -110,6 +110,8 @@ public class ChestEventHandler implements Listener {
         boolean exists = chestTracked(location);
         if (exists) {
             List<ItemStack> oldInventory = cachedInventories.get(location);
+            StringBuilder query = new StringBuilder();
+
             pointCounter.plugin.getServer().getScheduler().runTask(pointCounter.plugin, () -> {
                 ItemStack[] newInventory = event.getInventory().getContents();
                 if (oldInventory != null) {
@@ -118,34 +120,38 @@ public class ChestEventHandler implements Listener {
                         if (newInventory[i] != oldInventory.get(i)) {
                             if (newInventory[i] == null || newInventory[i].getType().isAir()) {
                                 if (!oldInventory.get(i).getType().isBlock()) return;
-                                pointDifference = pointDifference - (((int) pointCounter.config.get("blocks.chest." + oldInventory.get(i).getType().name())) * oldInventory.get(i).getAmount());
+                                query.append(oldInventory.get(i).getType().name() + " = " + oldInventory.get(i).getType().name() + " - " + oldInventory.get(i).getAmount() + ", ");
                             } else if (oldInventory.get(i) == null || oldInventory.get(i).getType().isAir()) {
                                 if (!newInventory[i].getType().isBlock()) return;
-                                pointDifference = pointDifference + (((int) pointCounter.config.get("blocks.chest." + newInventory[i].getType().name())) * newInventory[i].getAmount());
+                                query.append(newInventory[i].getType().name() + " = " + newInventory[i].getType().name() + " + " + newInventory[i].getAmount() + ", ");
                             } else {
                                 if (newInventory[i].getType() == oldInventory.get(i).getType()) {
                                     int amountDifference = newInventory[i].getAmount() - oldInventory.get(i).getAmount();
-                                    pointDifference = pointDifference + amountDifference;
+                                    if(amountDifference > 0) {
+                                        query.append(newInventory[i].getType().name() + " = " + newInventory[i].getType().name() + " + " + amountDifference + ", ");
+                                    } else {
+                                        query.append(newInventory[i].getType().name() + " = " + newInventory[i].getType().name() + " - " + amountDifference + ", ");
+                                    }
                                 } else {
-                                    int toRemove = (((int) pointCounter.config.get("blocks.chest." + oldInventory.get(i).getType().name())) * oldInventory.get(i).getAmount());
-                                    int toAdd = (((int) pointCounter.config.get("blocks.chest." + newInventory[i].getType().name())) * newInventory[i].getAmount());
-                                    pointDifference = pointDifference + toAdd - toRemove;
+                                    query.append(oldInventory.get(i).getType().name() + " = " + oldInventory.get(i).getType().name() + " - " + oldInventory.get(i).getAmount());
+                                    query.append(newInventory[i].getType().name() + " = " + newInventory[i].getType().name() + " + " + newInventory[i].getAmount());
                                 }
                             }
                         }
                     }
-                    if (pointDifference != 0) {
+                    if (query.length() > 0) {
                         try {
                             Statement statement = pointCounter.conn.createStatement();
-                            ResultSet result = statement.executeQuery("SELECT EXISTS(SELECT 1 FROM points WHERE uuid=\"" + player.getUniqueId() + "\");");
+                            ResultSet result = statement.executeQuery("SELECT EXISTS(SELECT 1 FROM delivery WHERE uuid=\"" + player.getUniqueId() + "\");");
                             while (result.next()) {
                                 if (result.getBoolean(1)) {
                                     Statement updateRow = pointCounter.conn.createStatement();
-                                    updateRow.executeUpdate("UPDATE points SET DeliveryPoints = DeliveryPoints + " + pointDifference + " WHERE uuid=\"" + player.getUniqueId() + "\";");
+                                    updateRow.executeUpdate("UPDATE delivery SET " + query.substring(0, query.length() - 2) + " WHERE uuid=\"" + player.getUniqueId() + "\";");
                                     updateRow.close();
                                 } else {
                                     Statement insertRow = pointCounter.conn.createStatement();
-                                    insertRow.executeUpdate("INSERT INTO points(uuid, BuildPoints, DeliveryPoints) VALUES (\"" + player.getUniqueId() + "\", 0, " + pointDifference + ");");
+                                    insertRow.executeUpdate("INSERT INTO delivery(uuid) VALUES (\"" + player.getUniqueId() + "\");");
+                                    insertRow.executeUpdate("UPDATE delivery SET " + query.substring(0, query.length() - 2) + " WHERE uuid=\"" + player.getUniqueId() + "\";");
                                     insertRow.close();
                                 }
                             }

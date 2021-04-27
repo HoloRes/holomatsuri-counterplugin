@@ -1,6 +1,7 @@
 package community.hlresort.holomatsuri;
 
 import community.hlresort.holomatsuri.commands.*;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -36,8 +37,15 @@ public class pointCounter extends JavaPlugin {
         // Database initialization
         try {
             Statement statement = conn.createStatement();
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS points (uuid TEXT PRIMARY KEY, BuildPoints INTEGER NOT NULL, DeliveryPoints INTEGER NOT NULL) WITHOUT ROWID;");
+            //! Deprecated in favor of individual block counting
+            //! statement.executeUpdate("CREATE TABLE IF NOT EXISTS points (uuid TEXT PRIMARY KEY, DeliveryPoints INTEGER NOT NULL) WITHOUT ROWID;");
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS chests (x INTEGER NOT NULL, y INTEGER NOT NULL, z INTEGER NOT NULL, world TEXT NOT NULL);");
+            StringBuilder blocksTable = new StringBuilder();
+            for(int i = 0; i < Material.values().length; i++) {
+                if(Material.values()[i].isBlock() && !Material.values()[i].isAir()) blocksTable.append(Material.values()[i].name()).append(" INTEGER DEFAULT 0, ");
+            }
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS builds (uuid TEXT PRIMARY KEY," + blocksTable.substring(0, blocksTable.length() - 2) + ") WITHOUT ROWID;");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS delivery (uuid TEXT PRIMARY KEY," + blocksTable.substring(0, blocksTable.length() - 2) + ") WITHOUT ROWID;");
             statement.close();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());

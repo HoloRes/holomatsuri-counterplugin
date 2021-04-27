@@ -45,15 +45,16 @@ public class BlockEventHandler implements Listener {
         if (blockX >= xStart && blockX <= xEnd && blockZ >= zStart && blockZ <= zEnd) {
             try {
                 Statement statement = pointCounter.conn.createStatement();
-                ResultSet result = statement.executeQuery("SELECT EXISTS(SELECT 1 FROM points WHERE uuid=\"" + player.getUniqueId() + "\");");
+                ResultSet result = statement.executeQuery("SELECT EXISTS(SELECT 1 FROM builds WHERE uuid=\"" + player.getUniqueId() + "\");");
                 while (result.next()) {
                     if (result.getBoolean(1)) {
                         Statement updateRow = pointCounter.conn.createStatement();
-                        updateRow.executeUpdate("UPDATE points SET BuildPoints = BuildPoints + " + pointCounter.config.get("blocks.build." + block.getType().name()) + " WHERE uuid=\"" + player.getUniqueId() + "\";");
+                        updateRow.executeUpdate("UPDATE builds SET " + block.getType().name() + "=" + block.getType().name() + " + 1" + " WHERE uuid=\"" + player.getUniqueId() + "\";");
                         updateRow.close();
                     } else {
                         Statement insertRow = pointCounter.conn.createStatement();
-                        insertRow.executeUpdate("INSERT INTO points(uuid, BuildPoints, DeliveryPoints) VALUES (\"" + player.getUniqueId() + "\", " + pointCounter.config.get("blocks.build." + block.getType().name()) + ", 0);");
+                        insertRow.executeUpdate("INSERT INTO builds(uuid) VALUES (\"" + player.getUniqueId() + "\");");
+                        insertRow.executeUpdate("UPDATE builds SET " + block.getType().name() + "=" + block.getType().name() + " + 1" + " WHERE uuid=\"" + player.getUniqueId() + "\";");
                         insertRow.close();
                     }
                 }
@@ -97,15 +98,16 @@ public class BlockEventHandler implements Listener {
         if (blockX >= xStart && blockX <= xEnd && blockZ >= zStart && blockZ <= zEnd) {
             try {
                 Statement statement = pointCounter.conn.createStatement();
-                ResultSet result = statement.executeQuery("SELECT EXISTS(SELECT 1 FROM points WHERE uuid=\"" + player.getUniqueId() + "\");");
+                ResultSet result = statement.executeQuery("SELECT EXISTS(SELECT 1 FROM builds WHERE uuid=\"" + player.getUniqueId() + "\");");
                 while (result.next()) {
                     if (result.getBoolean(1)) {
                         Statement updateRow = pointCounter.conn.createStatement();
-                        updateRow.executeUpdate("UPDATE points SET BuildPoints = BuildPoints - " + pointCounter.config.get("blocks.build." + block.getType().name()) + " WHERE uuid=\"" + player.getUniqueId() + "\";");
+                        updateRow.executeUpdate("UPDATE builds SET " +  block.getType().name() + "=" + block.getType().name() + " - 1" + " WHERE uuid=\"" + player.getUniqueId() + "\";");
                         updateRow.close();
                     } else {
                         Statement insertRow = pointCounter.conn.createStatement();
-                        insertRow.executeUpdate("INSERT INTO points(uuid, BuildPoints, DeliveryPoints) VALUES (\"" + player.getUniqueId() + "\", -" + pointCounter.config.get("blocks.build." + block.getType().name()) + ", 0);");
+                        insertRow.executeUpdate("INSERT INTO builds(uuid) VALUES (\"" + player.getUniqueId() + "\");");
+                        insertRow.executeUpdate("UPDATE builds SET " +  block.getType().name() + "=" + block.getType().name() + " - 1" + " WHERE uuid=\"" + player.getUniqueId() + "\";");
                         insertRow.close();
                     }
                 }
