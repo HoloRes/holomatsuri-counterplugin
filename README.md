@@ -14,6 +14,9 @@ Please do not complain about the code quality, I haven't worked in years with ei
 - `/getarea`  <br/>
   Get the current build area<br/>
   **Permission:** `holomatsuricounter.admin`
-- `/getarea`  <br/>
+- `/export`  <br/>
+  Exports the database to an XLSX file in the exports folder<br/>
+  **Permission:** `holomatsuricounter.admin`
+- `/points`  <br/>
   Get your current points<br/>
   **Permission:** `holomatsuricounter.player`
