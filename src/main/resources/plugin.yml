@@ -1,7 +1,7 @@
 main: community.hlresort.holomatsuri.pointCounter
 name: PointCounter
 api-version: 1.16
-version: 4.0.0
+version: 4.1.0
 build: 1
 
 commands:
@@ -22,6 +22,12 @@ commands:
       description: Remove a tracked chest
       usage: /removechest
       permission: holomatsuricounter.admin
+
+
+  export:
+    description: Exports an Excel file to the exports folder
+    usage: /export
+    permission: holomatsuricounter.admin
 
   points:
     description: Get your point count

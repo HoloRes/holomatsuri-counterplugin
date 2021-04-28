@@ -31,6 +31,7 @@ public class pointCounter extends JavaPlugin {
         this.getCommand("addchest").setExecutor(new addChest());
         this.getCommand("removechest").setExecutor(new removeChest());
         this.getCommand("points").setExecutor(new getPoints());
+        this.getCommand("export").setExecutor(new export());
 
         // Event handlers
         this.getServer().getPluginManager().registerEvents(new BlockEventHandler(), this);

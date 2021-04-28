@@ -36,7 +36,7 @@ public class getPoints implements CommandExecutor {
                     Statement getUser = pointCounter.conn.createStatement();
                     ResultSet user = getUser.executeQuery("SELECT * FROM builds WHERE uuid=\"" + player.getUniqueId() + "\";");
                     while (user.next()) {
-                        for(int i = 1; i < user.getMetaData().getColumnCount(); i++) {
+                        for(int i = 1; i <= user.getMetaData().getColumnCount(); i++) {
                             if(pointCounter.config.get("blocks.build." + user.getMetaData().getColumnName(i)) != null) buildPoints = buildPoints + ((int) pointCounter.config.get("blocks.build." + user.getMetaData().getColumnName(i)) * user.getInt(i));
                         }
                     }
@@ -50,7 +50,7 @@ public class getPoints implements CommandExecutor {
                     Statement getUser = pointCounter.conn.createStatement();
                     ResultSet user = getUser.executeQuery("SELECT * FROM delivery WHERE uuid=\"" + player.getUniqueId() + "\";");
                     while (user.next()) {
-                        for(int i = 1; i < user.getMetaData().getColumnCount(); i++) {
+                        for(int i = 1; i <= user.getMetaData().getColumnCount(); i++) {
                             if(pointCounter.config.get("blocks.chest." + user.getMetaData().getColumnName(i)) != null) deliveryPoints = deliveryPoints + ((int) pointCounter.config.get("blocks.chest." + user.getMetaData().getColumnName(i)) * user.getInt(i));
                         }
                     }
