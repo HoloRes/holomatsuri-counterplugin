@@ -3,6 +3,8 @@ name: PointCounter
 api-version: 1.16
 version: 4.1.0
 build: 1
+author: GoldElysium
+website: https://github.com/HoloRes/holomatsuri-counterplugin
 
 commands:
   setarea:
@@ -33,3 +35,11 @@ commands:
     description: Get your point count
     usage: /points
     permission: holomatsuricounter.player
+
+permissions:
+  holomatsuricounter.admin:
+    description: Allows access to all admin commands
+    default: op
+  holomatsuricounter.player:
+    description: Allows access to player commands
+    default: true
