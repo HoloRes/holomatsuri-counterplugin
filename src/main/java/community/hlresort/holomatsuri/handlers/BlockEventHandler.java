@@ -1,5 +1,6 @@
-package community.hlresort.holomatsuri;
+package community.hlresort.holomatsuri.handlers;
 
+import community.hlresort.holomatsuri.pointCounter;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,18 +29,18 @@ public class BlockEventHandler implements Listener {
                 || pointCounter.config.get("coordinates.z.end") == null) return;
 
         // Get all the coordinates
-        Integer xStart = (Integer) ((Integer) pointCounter.config.get("coordinates.x.end") > (Integer) pointCounter.config.get("coordinates.x.start")
+        int xStart = (int) ((int) pointCounter.config.get("coordinates.x.end") > (int) pointCounter.config.get("coordinates.x.start")
                 ? pointCounter.config.get("coordinates.x.start") : pointCounter.config.get("coordinates.x.end"));
-        Integer zStart = (Integer) ((Integer) pointCounter.config.get("coordinates.z.end") > (Integer) pointCounter.config.get("coordinates.z.start")
+        int zStart = (int) ((int) pointCounter.config.get("coordinates.z.end") > (int) pointCounter.config.get("coordinates.z.start")
                 ? pointCounter.config.get("coordinates.z.start") : pointCounter.config.get("coordinates.z.end"));
-        Integer xEnd = (Integer) ((Integer) pointCounter.config.get("coordinates.x.end") > (Integer) pointCounter.config.get("coordinates.x.start")
+        int xEnd = (int) ((int) pointCounter.config.get("coordinates.x.end") > (int) pointCounter.config.get("coordinates.x.start")
                 ? pointCounter.config.get("coordinates.x.end") : pointCounter.config.get("coordinates.x.start"));
-        Integer zEnd = (Integer) ((Integer) pointCounter.config.get("coordinates.z.end") > (Integer) pointCounter.config.get("coordinates.z.start")
+        int zEnd = (int) ((int) pointCounter.config.get("coordinates.z.end") > (int) pointCounter.config.get("coordinates.z.start")
                 ? pointCounter.config.get("coordinates.z.end") : pointCounter.config.get("coordinates.z.start"));
 
         // Get block coordinates
-        Integer blockX = block.getLocation().getBlockX();
-        Integer blockZ = block.getLocation().getBlockZ();
+        int blockX = block.getLocation().getBlockX();
+        int blockZ = block.getLocation().getBlockZ();
 
         // Check if it is in the build area
         if (blockX >= xStart && blockX <= xEnd && blockZ >= zStart && blockZ <= zEnd) {
@@ -81,18 +82,17 @@ public class BlockEventHandler implements Listener {
                 || pointCounter.config.get("coordinates.z.end") == null) return;
 
         // Get all the coordinates
-        Integer xStart = (Integer) ((Integer) pointCounter.config.get("coordinates.x.end") > (Integer) pointCounter.config.get("coordinates.x.start")
+        int xStart = (int) ((int) pointCounter.config.get("coordinates.x.end") > (int) pointCounter.config.get("coordinates.x.start")
                 ? pointCounter.config.get("coordinates.x.start") : pointCounter.config.get("coordinates.x.end"));
-        Integer zStart = (Integer) ((Integer) pointCounter.config.get("coordinates.z.end") > (Integer) pointCounter.config.get("coordinates.z.start")
+        int zStart = (int) ((int) pointCounter.config.get("coordinates.z.end") > (int) pointCounter.config.get("coordinates.z.start")
                 ? pointCounter.config.get("coordinates.z.start") : pointCounter.config.get("coordinates.z.end"));
-        Integer xEnd = (Integer) ((Integer) pointCounter.config.get("coordinates.x.end") > (Integer) pointCounter.config.get("coordinates.x.start")
+        int xEnd = (int) ((int) pointCounter.config.get("coordinates.x.end") > (int) pointCounter.config.get("coordinates.x.start")
                 ? pointCounter.config.get("coordinates.x.end") : pointCounter.config.get("coordinates.x.start"));
-        Integer zEnd = (Integer) ((Integer) pointCounter.config.get("coordinates.z.end") > (Integer) pointCounter.config.get("coordinates.z.start")
+        int zEnd = (int) ((int) pointCounter.config.get("coordinates.z.end") > (int) pointCounter.config.get("coordinates.z.start")
                 ? pointCounter.config.get("coordinates.z.end") : pointCounter.config.get("coordinates.z.start"));
-
         // Get block coordinates
-        Integer blockX = block.getLocation().getBlockX();
-        Integer blockZ = block.getLocation().getBlockZ();
+        int blockX = block.getLocation().getBlockX();
+        int blockZ = block.getLocation().getBlockZ();
 
         // Check if it is in the build area
         if (blockX >= xStart && blockX <= xEnd && blockZ >= zStart && blockZ <= zEnd) {

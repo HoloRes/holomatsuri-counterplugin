@@ -1,5 +1,6 @@
-package community.hlresort.holomatsuri;
+package community.hlresort.holomatsuri.handlers;
 
+import community.hlresort.holomatsuri.pointCounter;
 import org.bukkit.Location;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
@@ -17,9 +18,9 @@ import java.sql.Statement;
 import java.util.*;
 
 public class ChestEventHandler implements Listener {
-    public static List<UUID> trackedAddPlayers = new ArrayList<UUID>();
-    public static List<UUID> trackedRemovePlayers = new ArrayList<UUID>();
-    HashMap<Location, List<ItemStack>> cachedInventories = new HashMap<Location, List<ItemStack>>();
+    public static List<UUID> trackedAddPlayers = new ArrayList<>();
+    public static List<UUID> trackedRemovePlayers = new ArrayList<>();
+    HashMap<Location, List<ItemStack>> cachedInventories = new HashMap<>();
 
     private boolean chestTracked(Location location) {
         boolean exists = false;
@@ -43,11 +44,11 @@ public class ChestEventHandler implements Listener {
         boolean exists = chestTracked(location);
 
         if (exists) {
-            List<ItemStack> clonedItemStack = new ArrayList<ItemStack>();
+            List<ItemStack> clonedItemStack = new ArrayList<>();
             ItemStack[] knownItemStack = inventory.getContents();
-            for (int i = 0; i < knownItemStack.length; i++) {
-                if (knownItemStack[i] == null) clonedItemStack.add(null);
-                else clonedItemStack.add(new ItemStack(knownItemStack[i].getType(), knownItemStack[i].getAmount()));
+            for (ItemStack itemStack : knownItemStack) {
+                if (itemStack == null) clonedItemStack.add(null);
+                else clonedItemStack.add(new ItemStack(itemStack.getType(), itemStack.getAmount()));
             }
             cachedInventories.put(location, clonedItemStack);
         }
@@ -115,7 +116,6 @@ public class ChestEventHandler implements Listener {
             pointCounter.plugin.getServer().getScheduler().runTask(pointCounter.plugin, () -> {
                 ItemStack[] newInventory = event.getInventory().getContents();
                 if (oldInventory != null) {
-                    int pointDifference = 0;
                     for (int i = 0; i < newInventory.length; i++) {
                         if (newInventory[i] != oldInventory.get(i)) {
                             if (newInventory[i] == null || newInventory[i].getType().isAir()) {

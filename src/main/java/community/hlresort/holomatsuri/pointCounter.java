@@ -1,6 +1,8 @@
 package community.hlresort.holomatsuri;
 
 import community.hlresort.holomatsuri.commands.*;
+import community.hlresort.holomatsuri.handlers.BlockEventHandler;
+import community.hlresort.holomatsuri.handlers.ChestEventHandler;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;

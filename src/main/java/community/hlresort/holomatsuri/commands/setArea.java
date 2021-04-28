@@ -6,6 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
@@ -15,13 +16,11 @@ public class setArea implements CommandExecutor {
     String world;
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("This command can only be executed by a player!");
             return false;
         }
-
-        Player player = (Player) sender;
 
         if (args.length > 0 && args[0] != null && args[0].toLowerCase(Locale.ROOT).equals("cancel")) {
             xStart = null;
