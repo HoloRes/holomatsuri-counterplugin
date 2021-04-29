@@ -10,10 +10,12 @@ import org.jetbrains.annotations.NotNull;
 public class addChest implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        if (!(sender instanceof Player player)) {
+        if (!(sender instanceof Player)) {
             sender.sendMessage("This command can only be executed by a player!");
             return false;
         }
+        
+        Player player = (Player) sender;
 
         int foundIndex = ChestEventHandler.trackedAddPlayers.indexOf(player.getUniqueId());
         if (foundIndex != -1) {

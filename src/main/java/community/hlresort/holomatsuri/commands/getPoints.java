@@ -16,10 +16,12 @@ import java.sql.Statement;
 public class getPoints implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        if (!(sender instanceof Player player)) {
+        if (!(sender instanceof Player)) {
             sender.sendMessage("This command can only be executed by a player!");
             return false;
         }
+        
+        Player player = (Player) sender;
 
         try {
             int buildPoints = 0;

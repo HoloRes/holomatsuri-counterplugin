@@ -17,10 +17,12 @@ public class setArea implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        if (!(sender instanceof Player player)) {
+        if (!(sender instanceof Player)) {
             sender.sendMessage("This command can only be executed by a player!");
             return false;
         }
+        
+        Player player = (Player) sender;
 
         if (args.length > 0 && args[0] != null && args[0].toLowerCase(Locale.ROOT).equals("cancel")) {
             xStart = null;
