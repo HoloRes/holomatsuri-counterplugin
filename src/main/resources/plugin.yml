@@ -1,7 +1,7 @@
 main: community.hlresort.holomatsuri.pointCounter
 name: PointCounter
 api-version: 1.16
-version: 4.1.1
+version: 4.1.2
 build: 1
 author: GoldElysium
 website: https://github.com/HoloRes/holomatsuri-counterplugin

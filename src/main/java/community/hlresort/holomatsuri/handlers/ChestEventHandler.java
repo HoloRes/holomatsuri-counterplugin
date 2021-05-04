@@ -111,7 +111,7 @@ public class ChestEventHandler implements Listener {
         boolean exists = chestTracked(location);
         if (exists) {
             List<ItemStack> oldInventory = cachedInventories.get(location);
-            StringBuilder query = new StringBuilder();
+            List<String> queries = new ArrayList<>();
 
             pointCounter.plugin.getServer().getScheduler().runTask(pointCounter.plugin, () -> {
                 ItemStack[] newInventory = event.getInventory().getContents();
@@ -120,38 +120,39 @@ public class ChestEventHandler implements Listener {
                         if (newInventory[i] != oldInventory.get(i)) {
                             if (newInventory[i] == null || newInventory[i].getType().isAir()) {
                                 if (!oldInventory.get(i).getType().isBlock()) return;
-                                query.append(oldInventory.get(i).getType().name() + " = " + oldInventory.get(i).getType().name() + " - " + oldInventory.get(i).getAmount() + ", ");
+                                queries.add(oldInventory.get(i).getType().name() + " = " + oldInventory.get(i).getType().name() + " - " + oldInventory.get(i).getAmount());
                             } else if (oldInventory.get(i) == null || oldInventory.get(i).getType().isAir()) {
                                 if (!newInventory[i].getType().isBlock()) return;
-                                query.append(newInventory[i].getType().name() + " = " + newInventory[i].getType().name() + " + " + newInventory[i].getAmount() + ", ");
+                                queries.add(newInventory[i].getType().name() + " = " + newInventory[i].getType().name() + " + " + newInventory[i].getAmount());
                             } else {
                                 if (newInventory[i].getType() == oldInventory.get(i).getType()) {
+                                    if(!newInventory[i].getType().isBlock() || newInventory[i].getType().isAir()) return;
                                     int amountDifference = newInventory[i].getAmount() - oldInventory.get(i).getAmount();
-                                    if(amountDifference > 0) {
-                                        query.append(newInventory[i].getType().name() + " = " + newInventory[i].getType().name() + " + " + amountDifference + ", ");
-                                    } else {
-                                        query.append(newInventory[i].getType().name() + " = " + newInventory[i].getType().name() + " - " + amountDifference + ", ");
-                                    }
+                                    if(amountDifference != 0) queries.add(newInventory[i].getType().name() + " = " + newInventory[i].getType().name() + " + " + amountDifference);
                                 } else {
-                                    query.append(oldInventory.get(i).getType().name() + " = " + oldInventory.get(i).getType().name() + " - " + oldInventory.get(i).getAmount());
-                                    query.append(newInventory[i].getType().name() + " = " + newInventory[i].getType().name() + " + " + newInventory[i].getAmount());
+                                    if(oldInventory.get(i).getType().isBlock() && !oldInventory.get(i).getType().isAir()) queries.add(oldInventory.get(i).getType().name() + " = " + oldInventory.get(i).getType().name() + " - " + oldInventory.get(i).getAmount());
+                                    if(newInventory[i].getType().isBlock() && !newInventory[i].getType().isAir()) queries.add(newInventory[i].getType().name() + " = " + newInventory[i].getType().name() + " + " + newInventory[i].getAmount());
                                 }
                             }
                         }
                     }
-                    if (query.length() > 0) {
+                    if (queries.size() > 0) {
                         try {
                             Statement statement = pointCounter.conn.createStatement();
                             ResultSet result = statement.executeQuery("SELECT EXISTS(SELECT 1 FROM delivery WHERE uuid=\"" + player.getUniqueId() + "\");");
                             while (result.next()) {
                                 if (result.getBoolean(1)) {
                                     Statement updateRow = pointCounter.conn.createStatement();
-                                    updateRow.executeUpdate("UPDATE delivery SET " + query.substring(0, query.length() - 2) + " WHERE uuid=\"" + player.getUniqueId() + "\";");
+                                    for(String query : queries) {
+                                        updateRow.executeUpdate("UPDATE delivery SET " + query + " WHERE uuid=\"" + player.getUniqueId() + "\";");
+                                    }
                                     updateRow.close();
                                 } else {
                                     Statement insertRow = pointCounter.conn.createStatement();
                                     insertRow.executeUpdate("INSERT INTO delivery(uuid) VALUES (\"" + player.getUniqueId() + "\");");
-                                    insertRow.executeUpdate("UPDATE delivery SET " + query.substring(0, query.length() - 2) + " WHERE uuid=\"" + player.getUniqueId() + "\";");
+                                    for(String query : queries) {
+                                        insertRow.executeUpdate("UPDATE delivery SET " + query + " WHERE uuid=\"" + player.getUniqueId() + "\";");
+                                    }
                                     insertRow.close();
                                 }
                             }
